@@ -10,8 +10,8 @@ ProposalProof is an interactive governance operations console backed directly by
 
 ## Live application
 
-- App: https://proposalproof-genlayer.galaxthoo.chatgpt.site
-- Evidence mirror: https://proposalproof-genlayer.galaxthoo.chatgpt.site/evidence/aave-359
+- App: https://proposalproof-governance.galaxthoo.chatgpt.site
+- Evidence mirror: https://proposalproof-governance.galaxthoo.chatgpt.site/evidence/aave-359
 - Source snapshot: https://github.com/klopp78/proposalproof-genlayer/blob/main/evidence/aave-359.md
 
 ## Product flow

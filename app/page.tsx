@@ -14,7 +14,7 @@ const example = {
     "https://etherscan.io/tx/0x7a41b0b367d7914389edfdf132c9031fb6379bb97e7b6b0139c02ffd087f1ded",
     "https://governance.aave.com/t/arfc-claiming-aave-rewards-for-the-sablier-legacy-v1-1-contract/21975",
     "https://github.com/klopp78/proposalproof-genlayer/blob/main/evidence/aave-359.md",
-    "https://proposalproof-genlayer.galaxthoo.chatgpt.site/evidence/aave-359",
+    "https://proposalproof-governance.galaxthoo.chatgpt.site/evidence/aave-359",
   ],
 };
 
