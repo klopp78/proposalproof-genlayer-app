@@ -10,7 +10,7 @@ declare global {
 
 export const CONTRACT_ADDRESS =
   (process.env.NEXT_PUBLIC_PROPOSAL_EXECUTION_GUARD_ADDRESS ??
-    "0xA972D14f7029a6263645DB72ca46eeF81e088280") as `0x${string}`;
+    "0x4EE1Ee04E11a371589d161889cd17Aa32626fE7a") as `0x${string}`;
 
 export type WalletAddress = `0x${string}`;
 

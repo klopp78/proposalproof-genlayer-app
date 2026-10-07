@@ -4,8 +4,8 @@ ProposalProof is an interactive governance operations console backed directly by
 
 ## Live contract
 
-- Address: `0xA972D14f7029a6263645DB72ca46eeF81e088280`
-- Explorer: https://explorer-studio.genlayer.com/address/0xA972D14f7029a6263645DB72ca46eeF81e088280
+- Address: `0x4EE1Ee04E11a371589d161889cd17Aa32626fE7a`
+- Explorer: https://explorer-studio.genlayer.com/address/0x4EE1Ee04E11a371589d161889cd17Aa32626fE7a
 - Finalized example: `peg_443f8cba63e00ce90477`
 
 ## Live application
