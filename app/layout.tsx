@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "ProposalProof for GenLayer",
   description: "Consensus-backed governance proposal and execution verification on GenLayer.",

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Consensus-backed governance execution verification on GenLayer." />
+    <title>ProposalProof for GenLayer</title>
+    <script type="module" src="/pages/main.ts"></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div><p class="kicker">GenLayer governance operations</p><h1>ProposalProof</h1></div>
+        <div class="header-actions"><a id="explorer" class="icon-link" target="_blank" rel="noreferrer">Explorer</a><button id="connect" class="button">Connect wallet</button></div>
+      </header>
+      <section class="status-strip" aria-live="polite"><span id="status-dot" class="dot"></span><strong id="status">Ready to inspect the finalized example receipt.</strong><code id="short-address"></code></section>
+      <div class="workspace">
+        <section class="editor-panel">
+          <div class="section-heading"><div><span>Assessment input</span><h2>Bind proposal to execution</h2></div><button id="load-example" class="text-button">Load verified example</button></div>
+          <div class="form-grid">
+            <label class="field"><span>Governance</span><input id="governance" /></label>
+            <label class="field"><span>Proposal ID</span><input id="proposal-id" /></label>
+            <label class="field wide"><span>Proposal URL</span><input id="proposal-url" type="url" /></label>
+            <label class="field wide"><span>Execution transaction URL</span><input id="execution-url" type="url" /></label>
+            <label class="field wide"><span>Approved actions</span><textarea id="actions" rows="4"></textarea></label>
+          </div>
+          <div class="evidence-head"><span>Evidence sources</span><small id="source-count"></small></div>
+          <div id="sources" class="evidence-list"></div>
+          <button id="add-source" class="text-button add">+ Add source</button>
+          <label class="field contract"><span>Contract address</span><input id="contract-address" /></label>
+          <div class="submit-row"><p>Normal consensus · validator-recomputed snapshots</p><button id="verify" class="button primary">Verify execution</button></div>
+        </section>
+        <aside class="receipt-panel">
+          <div class="section-heading compact"><div><span>On-chain receipt</span><h2>Accepted record</h2></div><div id="decision" class="decision">not loaded</div></div>
+          <div class="lookup"><input id="receipt-id" aria-label="Receipt ID" /><button id="read" class="button">Read</button><button id="latest" class="button square" title="Read latest receipt">↻</button></div>
+          <div class="metrics"><div><span>Confidence</span><strong id="confidence">—</strong></div><div><span>Sources</span><strong id="source-total">—</strong></div><div><span>Chain</span><strong id="chain">—</strong></div></div>
+          <div class="checks"><div><span id="proposal-check" class="check">·</span><b>Proposal identity</b><small id="proposal-text">not confirmed</small></div><div><span id="action-check" class="check">·</span><b>Approved actions</b><small id="action-text">not confirmed</small></div><div><span id="execution-check" class="check">·</span><b>Execution tx</b><small id="execution-text">not confirmed</small></div></div>
+          <dl class="receipt-data"><div><dt>Proposal</dt><dd id="receipt-proposal">—</dd></div><div><dt>Executed</dt><dd id="executed">—</dd></div><div><dt>Snapshot bundle</dt><dd><code id="snapshot">—</code></dd></div><div><dt>Record hash</dt><dd><code id="record-hash">—</code></dd></div></dl>
+          <pre id="record">Load a receipt to inspect the validator-accepted record.</pre>
+        </aside>
+      </div>
+    </main>
+  </body>
+</html>
