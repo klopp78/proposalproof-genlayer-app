@@ -6,7 +6,7 @@ export default defineConfig({
     outDir: "pages-dist",
     emptyOutDir: true,
     rollupOptions: {
-      input: "pages/index.html",
+      input: "site-static/index.html",
     },
   },
 });
