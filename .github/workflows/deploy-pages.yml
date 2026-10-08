@@ -25,10 +25,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: pnpm
-      - run: corepack enable
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run build:pages
+      - run: npm install
+      - run: npm run build:pages
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./pages-dist
