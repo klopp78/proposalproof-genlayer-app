@@ -175,6 +175,26 @@ class ContractBehaviorTests(unittest.TestCase):
         changed["decision"] = "insufficient_evidence"
         self.assertEqual(module._consensus_view(base), module._consensus_view(changed))
 
+    def test_validator_accepts_safe_negative_but_never_unverified_positive(self):
+        module = self.contract_module
+        identity = f"1:{TX_HASH}"
+        negative = {
+            "assessment_context_hash": "a" * 64,
+            "normalized_execution_identity": identity,
+            "decision": "disputed",
+        }
+        positive = dict(negative)
+        positive["decision"] = "executed_match"
+        positive.update({
+            "proposal_status": "passed", "execution_status": "success",
+            "proposal_match": True, "action_match": True, "execution_tx_match": True,
+            "destination_addresses": [], "function_calls": [], "values_wei": [],
+            "parameters_hash": "b" * 64, "block_number": "1",
+            "supporting_source_count": 2, "independent_source_count": 2,
+        })
+        self.assertTrue(module._validator_agrees(negative, positive))
+        self.assertFalse(module._validator_agrees(positive, negative))
+
     def test_adversarial_identity_mismatch_cannot_be_an_executed_match(self):
         module = self.contract_module
         original = FakeNondet.exec_prompt

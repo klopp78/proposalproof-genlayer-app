@@ -97,7 +97,7 @@ class ProposalExecutionGuard(gl.Contract):
                 independent = _parse_result(leader_fn(), require_evidence=True)
             except Exception:
                 return False
-            return _consensus_view(proposed) == _consensus_view(independent)
+            return _validator_agrees(proposed, independent)
 
         result = _parse_result(gl.vm.run_nondet_unsafe(leader_fn, validator_fn), require_evidence=True)
         if result["decision"] == "executed_match":
@@ -474,6 +474,16 @@ def _consensus_view(result: dict) -> str:
         )
         view.update({field: result[field] for field in strict_fields})
     return _canonical_json(view)
+
+
+def _validator_agrees(proposed: dict, independent: dict) -> bool:
+    if proposed["assessment_context_hash"] != independent["assessment_context_hash"]:
+        return False
+    if proposed["normalized_execution_identity"] != independent["normalized_execution_identity"]:
+        return False
+    if proposed["decision"] != "executed_match":
+        return True
+    return _consensus_view(proposed) == _consensus_view(independent)
 
 
 def _validate_sources(raw_urls: typing.Sequence[str]) -> typing.Sequence[str]:
