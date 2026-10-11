@@ -1,6 +1,6 @@
-# Aave proposal 359 execution evidence snapshot
+# Aave proposal 359 verification fixture
 
-This document is a human-readable evidence mirror for the ProposalProof demo. It does not replace the canonical governance or block-explorer records. Reviewers and validators should use the links below as the authoritative originals.
+This document supplies public inputs for the ProposalProof v2 demo. It does not replace the canonical governance or block-explorer records. The contract persists the exact rendered excerpts and normalized semantic snapshots used during assessment; retrieve them with `get_evidence_pack(assessment_id)`.
 
 ## Proposal identity
 
@@ -16,10 +16,11 @@ Call `claimRewardsOnBehalf()` for Sablier Legacy v1.1 and distribute `8958056891
 ## Execution record
 
 - Target chain: Ethereum
+- Chain ID: `1`
 - Transaction: `0x7a41b0b367d7914389edfdf132c9031fb6379bb97e7b6b0139c02ffd087f1ded`
 - Canonical transaction: https://etherscan.io/tx/0x7a41b0b367d7914389edfdf132c9031fb6379bb97e7b6b0139c02ffd087f1ded
 - Governance discussion: https://governance.aave.com/t/arfc-claiming-aave-rewards-for-the-sablier-legacy-v1-1-contract/21975
 
 ## Integrity note
 
-ProposalProof passes the complete source bundle to the deployed GenLayer contract. Validators render the sources, compare the proposal identity, approved actions, and execution transaction, then persist their accepted record and collision-resistant source snapshot commitments. The application displays contract state and does not calculate a local verdict.
+ProposalProof passes the complete source bundle plus the normalized `1:0x7a41...f1ded` execution identity to the deployed GenLayer contract. Validators compare decision-critical semantic snapshots rather than volatile page chrome. The accepted record binds destination addresses, decoded calls, values, parameters, block number, execution time, provider-family independence, and a retrievable exact evidence pack. The application displays finalized contract state and never calculates a local verdict.

@@ -1,32 +1,43 @@
 # ProposalProof for GenLayer
 
-ProposalProof is an interactive governance operations console backed directly by the deployed ProposalExecutionGuard Intelligent Contract. It binds a public proposal, its approved action list, an execution transaction, and two to five independent sources into a durable GenLayer consensus receipt.
+ProposalProof is an interactive governance execution verification console backed by the ProposalExecutionGuard v2 Intelligent Contract. It binds an approved proposal to one normalized blockchain execution identity and stores a durable consensus receipt plus the exact evidence pack used during assessment.
 
-## Live contract
+## Verification model
 
-- Address: `0x4EE1Ee04E11a371589d161889cd17Aa32626fE7a`
-- Explorer: https://explorer-studio.genlayer.com/address/0x4EE1Ee04E11a371589d161889cd17Aa32626fE7a
-- Finalized example: `peg_443f8cba63e00ce90477`
+- Execution identity is `chain_id:transaction_hash`, never a URL string.
+- The execution URL must bind that hash on a supported authoritative explorer.
+- Source independence uses provider families, so aliases and subdomains from Etherscan, GitHub, Aave, or Blockscout are not counted as separate evidence providers.
+- Validators extract and compare decision-critical facts: proposal status, transaction status, destinations, decoded calls, values, parameters, block number, execution time, proposal identity, and action match.
+- Consensus compares canonical semantic snapshots, so irrelevant navigation, prices, ads, and other page churn do not alter the decision commitment.
+- Exact rendered excerpts, raw hashes, normalized facts, and semantic hashes are stored in a retrievable evidence pack.
+- Successful writes require finalized GenVM execution and exact `LATEST_FINAL` state readback in the app.
+
+## Persistent API
+
+```python
+assess_execution(governance_name, proposal_id, proposal_url, execution_chain_id,
+                 execution_tx_hash, execution_tx_url, declared_actions, source_urls) -> str
+get_assessment(assessment_id) -> str
+get_evidence_pack(assessment_id) -> str
+get_execution_claim(chain_id, transaction_hash) -> str
+get_latest_assessment_id() -> str
+get_assessment_count() -> u64
+list_assessment_ids() -> str
+```
+
+## Authoritative deployment
+
+The v2 StudioNet address and a finalized verification receipt will be recorded here immediately after deployment. Earlier addresses are legacy v1 deployments and are not used by the v2 frontend.
 
 ## Live application
 
 - App: https://klopp78.github.io/proposalproof-genlayer-app/
-- Evidence mirror: https://github.com/klopp78/proposalproof-genlayer-app/blob/main/evidence/aave-359.md
-- Source snapshot: https://github.com/klopp78/proposalproof-genlayer/blob/main/evidence/aave-359.md
+- Evidence example: [evidence/aave-359.md](evidence/aave-359.md)
 
-## Product flow
-
-1. Connect a browser wallet to Studionet.
-2. Enter the governance body, proposal ID, canonical proposal page, execution transaction, approved actions, and independent evidence sources.
-3. Submit the assessment to GenLayer full consensus.
-4. Read the returned `peg_*` record from accepted or finalized state.
-5. Inspect validator-accepted match flags, confidence, source counts, timestamps, and cryptographic commitments.
-
-The UI never calculates a local verdict. It uses `genlayer-js` for writes and readback, and every visible result comes from contract state.
-
-## Checks
+## Tests
 
 ```bash
-npm run contract:check
-npm run build
+npm test
 ```
+
+The test suite runs contract marker checks, mocked GenVM leader/validator behavior, adversarial identity and provider-family tests, the Next/Vinext production build, and the static GitHub Pages build.

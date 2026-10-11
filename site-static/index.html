@@ -21,6 +21,8 @@
             <label class="field"><span>Governance</span><input id="governance" /></label>
             <label class="field"><span>Proposal ID</span><input id="proposal-id" /></label>
             <label class="field wide"><span>Proposal URL</span><input id="proposal-url" type="url" /></label>
+            <label class="field"><span>Execution chain ID</span><input id="execution-chain-id" inputmode="numeric" /></label>
+            <label class="field"><span>Transaction hash</span><input id="execution-tx-hash" /></label>
             <label class="field wide"><span>Execution transaction URL</span><input id="execution-url" type="url" /></label>
             <label class="field wide"><span>Approved actions</span><textarea id="actions" rows="4"></textarea></label>
           </div>
@@ -28,15 +30,16 @@
           <div id="sources" class="evidence-list"></div>
           <button id="add-source" class="text-button add">+ Add source</button>
           <label class="field contract"><span>Contract address</span><input id="contract-address" /></label>
-          <div class="submit-row"><p>Normal consensus · validator-recomputed snapshots</p><button id="verify" class="button primary">Verify execution</button></div>
+          <div class="submit-row"><p>Normal consensus · chain ID + tx hash identity · retrievable snapshots</p><button id="verify" class="button primary">Verify execution</button></div>
         </section>
         <aside class="receipt-panel">
           <div class="section-heading compact"><div><span>On-chain receipt</span><h2>Accepted record</h2></div><div id="decision" class="decision">not loaded</div></div>
           <div class="lookup"><input id="receipt-id" aria-label="Receipt ID" /><button id="read" class="button">Read</button><button id="latest" class="button square" title="Read latest receipt">↻</button></div>
-          <div class="metrics"><div><span>Confidence</span><strong id="confidence">—</strong></div><div><span>Sources</span><strong id="source-total">—</strong></div><div><span>Chain</span><strong id="chain">—</strong></div></div>
+          <div class="metrics"><div><span>Confidence</span><strong id="confidence">—</strong></div><div><span>Sources</span><strong id="source-total">—</strong></div><div><span>Chain ID</span><strong id="chain">—</strong></div></div>
           <div class="checks"><div><span id="proposal-check" class="check">·</span><b>Proposal identity</b><small id="proposal-text">not confirmed</small></div><div><span id="action-check" class="check">·</span><b>Approved actions</b><small id="action-text">not confirmed</small></div><div><span id="execution-check" class="check">·</span><b>Execution tx</b><small id="execution-text">not confirmed</small></div></div>
-          <dl class="receipt-data"><div><dt>Proposal</dt><dd id="receipt-proposal">—</dd></div><div><dt>Executed</dt><dd id="executed">—</dd></div><div><dt>Snapshot bundle</dt><dd><code id="snapshot">—</code></dd></div><div><dt>Record hash</dt><dd><code id="record-hash">—</code></dd></div></dl>
+          <dl class="receipt-data"><div><dt>Proposal</dt><dd id="receipt-proposal">—</dd></div><div><dt>Executed</dt><dd id="executed">—</dd></div><div><dt>Snapshot bundle</dt><dd><code id="snapshot">—</code></dd></div><div><dt>Evidence pack</dt><dd><code id="evidence-hash">—</code></dd></div><div><dt>Record hash</dt><dd><code id="record-hash">—</code></dd></div></dl>
           <pre id="record">Load a receipt to inspect the validator-accepted record.</pre>
+          <details><summary>Exact assessment evidence pack</summary><pre id="evidence-pack">Load a receipt to inspect its evidence pack.</pre></details>
         </aside>
       </div>
     </main>

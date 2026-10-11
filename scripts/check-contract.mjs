@@ -4,8 +4,11 @@ const source = readFileSync("contracts/proposal_execution_guard.py", "utf8");
 const required = [
   "class ProposalExecutionGuard(gl.Contract)",
   "def assess_execution(",
-  "source_snapshot_hashes",
-  "snapshot_bundle_hash",
+  "semantic_snapshot_hashes",
+  "semantic_snapshot_bundle_hash",
+  "get_evidence_pack",
+  "normalized_execution_identity",
+  "independence_key",
   "assessment_context_hash",
   "execution_already_claimed",
   "hashlib.sha256",

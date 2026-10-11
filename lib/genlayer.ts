@@ -19,10 +19,13 @@ export type AssessmentInput = {
   governanceName: string;
   proposalId: string;
   proposalUrl: string;
+  executionChainId: string;
+  executionTxHash: string;
   executionTxUrl: string;
   declaredActions: string;
   sourceUrls: string[];
   contractAddress?: `0x${string}`;
+  onStatus?: (status: string) => void;
 };
 
 function client(walletAddress?: WalletAddress) {
@@ -39,6 +42,7 @@ function address(override?: `0x${string}`) {
 
 export async function assessExecution(input: AssessmentInput) {
   const writeClient = client(input.walletAddress);
+  input.onStatus?.("Submitting transaction to GenLayer...");
   await writeClient.connect("studionet");
   const contractAddress = address(input.contractAddress);
   const hash = await writeClient.writeContract({
@@ -48,6 +52,8 @@ export async function assessExecution(input: AssessmentInput) {
       input.governanceName,
       input.proposalId,
       input.proposalUrl,
+      input.executionChainId,
+      input.executionTxHash,
       input.executionTxUrl,
       input.declaredActions,
       input.sourceUrls,
@@ -55,12 +61,15 @@ export async function assessExecution(input: AssessmentInput) {
     value: BigInt(0),
     leaderOnly: false,
   });
+  input.onStatus?.(`Submitted ${hash}. Waiting for validator consensus and FINALIZED status...`);
   const receipt = await waitForConsensus(writeClient, hash);
+  input.onStatus?.("GenVM finalized with FINISHED_WITH_RETURN. Polling exact assessment readback...");
   const assessmentId = extractId(receipt, /peg_[a-f0-9]{20}/);
-  const record = assessmentId
-    ? await readAssessment(assessmentId, contractAddress)
-    : await readLatestAssessment(contractAddress);
-  return { hash, assessmentId: assessmentId || record.id, record: record.value };
+  if (!assessmentId) throw new Error("Finalized GenVM execution did not return a peg_* assessment ID.");
+  const record = await pollAssessment(assessmentId, contractAddress);
+  input.onStatus?.(`Assessment ${assessmentId} read from LATEST_FINAL. Reading durable evidence pack...`);
+  const evidence = await readEvidencePack(assessmentId, contractAddress);
+  return { hash, assessmentId, record: record.value, evidence };
 }
 
 export async function readAssessment(assessmentId: string, contractAddress = CONTRACT_ADDRESS) {
@@ -74,56 +83,74 @@ export async function readLatestAssessment(contractAddress = CONTRACT_ADDRESS) {
   return readAssessment(id.replaceAll('"', ""), contractAddress);
 }
 
+export async function readEvidencePack(assessmentId: string, contractAddress = CONTRACT_ADDRESS) {
+  const value = await read("get_evidence_pack", [assessmentId], contractAddress);
+  const parsed = parseJsonRecord(value, "evidence pack");
+  if (parsed.assessment_id !== assessmentId) throw new Error("Evidence pack ID does not match the requested assessment.");
+  return value;
+}
+
 async function read(functionName: string, args: string[], contractAddress: `0x${string}`) {
   const readClient = createClient({ chain: studionet });
   let lastError: unknown;
-  for (const transactionHashVariant of [
-    TransactionHashVariant.LATEST_FINAL,
-    TransactionHashVariant.LATEST_NONFINAL,
-  ]) {
-    try {
-      const result = await readClient.readContract({
-        address: contractAddress,
-        functionName,
-        args,
-        jsonSafeReturn: true,
-        transactionHashVariant,
-      });
-      return typeof result === "string" ? result : JSON.stringify(result);
-    } catch (error) {
-      lastError = error;
-    }
+  try {
+    const result = await readClient.readContract({
+      address: contractAddress,
+      functionName,
+      args,
+      jsonSafeReturn: true,
+      transactionHashVariant: TransactionHashVariant.LATEST_FINAL,
+    });
+    return typeof result === "string" ? result : JSON.stringify(result);
+  } catch (error) {
+    lastError = error;
   }
   throw new Error(lastError instanceof Error ? lastError.message : String(lastError));
 }
 
 async function waitForConsensus(writeClient: ReturnType<typeof client>, hash: `0x${string}`) {
-  try {
-    const receipt = await writeClient.waitForTransactionReceipt({
-      hash,
-      status: TransactionStatus.FINALIZED,
-      interval: 3000,
-      retries: 120,
-      fullTransaction: true,
-    } as never);
-    assertSuccess(receipt);
-    return receipt;
-  } catch {
-    const receipt = await writeClient.waitForTransactionReceipt({
-      hash,
-      status: TransactionStatus.ACCEPTED,
-      interval: 3000,
-      retries: 80,
-      fullTransaction: true,
-    } as never);
-    assertSuccess(receipt);
-    return receipt;
-  }
+  const receipt = await writeClient.waitForTransactionReceipt({
+    hash,
+    status: TransactionStatus.FINALIZED,
+    interval: 3000,
+    retries: 120,
+    fullTransaction: true,
+  } as never);
+  assertSuccess(receipt);
+  return receipt;
 }
 
 function assertSuccess(receipt: unknown) {
-  if ((receipt as { txExecutionResultName?: string })?.txExecutionResultName === ExecutionResult.FINISHED_WITH_ERROR) {
-    throw new Error("Consensus completed with a contract execution error.");
+  const result = (receipt as { txExecutionResultName?: string })?.txExecutionResultName;
+  if (result !== ExecutionResult.FINISHED_WITH_RETURN) {
+    throw new Error(`Finalized GenVM execution was not successful (${result ?? "unknown"}).`);
+  }
+}
+
+async function pollAssessment(assessmentId: string, contractAddress: `0x${string}`) {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= 20; attempt += 1) {
+    try {
+      const record = await readAssessment(assessmentId, contractAddress);
+      const parsed = parseJsonRecord(record.value, "assessment");
+      if (parsed.assessment_id !== assessmentId) throw new Error("Assessment readback returned a mismatched ID.");
+      return record;
+    } catch (error) {
+      lastError = error;
+      if (attempt < 20) await new Promise((resolve) => setTimeout(resolve, 2500));
+    }
+  }
+  throw new Error(`Finalized assessment was not readable before timeout: ${lastError instanceof Error ? lastError.message : String(lastError)}`);
+}
+
+function parseJsonRecord(value: string, label: string) {
+  if (!value || value === '""') throw new Error(`The ${label} readback was empty.`);
+  try {
+    const parsed = JSON.parse(value) as Record<string, unknown>;
+    if (!parsed || typeof parsed !== "object") throw new Error("not an object");
+    return parsed;
+  } catch (error) {
+    throw new Error(`The ${label} readback was not valid JSON: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
 
