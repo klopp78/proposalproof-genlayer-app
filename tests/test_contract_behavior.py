@@ -136,6 +136,22 @@ class ContractBehaviorTests(unittest.TestCase):
         self.assertEqual(module._independence_key("raw.githubusercontent.com"), "github")
         self.assertEqual(module._independence_key("github.com"), "github")
 
+    def test_irrelevant_snapshot_changes_do_not_split_consensus(self):
+        module = self.contract_module
+        urls = ["https://vote.onaave.com/proposal/359", f"https://etherscan.io/tx/{TX_HASH}"]
+        manifest = module._source_manifest(urls, urls[0], urls[1])
+        raw = module._evaluate_execution(
+            "Aave Governance", "359", urls[0], "1", TX_HASH, urls[1],
+            "Call claimRewardsOnBehalf() for Sablier", urls, manifest, "a" * 64,
+        )
+        base = module._parse_result(raw, require_evidence=True)
+        changed = dict(base)
+        changed["semantic_snapshot_hashes"] = ["f" * 64, "e" * 64]
+        changed["semantic_snapshot_bundle_hash"] = "d" * 64
+        changed["raw_snapshot_bundle_hash"] = "c" * 64
+        changed["executed_at_utc"] = "2026-01-01T00:00:01Z"
+        self.assertEqual(module._consensus_view(base), module._consensus_view(changed))
+
     def test_adversarial_identity_mismatch_cannot_be_an_executed_match(self):
         module = self.contract_module
         original = FakeNondet.exec_prompt

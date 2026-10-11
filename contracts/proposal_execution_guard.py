@@ -458,12 +458,12 @@ def _parse_result(raw: str, require_evidence: bool) -> dict:
 
 
 def _consensus_view(result: dict) -> str:
+    # Agree on decision-critical facts, not volatile page excerpts or their commitments.
     fields = (
         "decision", "proposal_status", "execution_status", "proposal_match", "action_match",
-        "execution_tx_match", "executed_at_utc", "destination_addresses", "function_calls",
+        "execution_tx_match", "destination_addresses", "function_calls",
         "values_wei", "parameters_hash", "block_number", "supporting_source_count",
-        "readable_source_count", "independent_source_count", "semantic_snapshot_hashes",
-        "semantic_snapshot_bundle_hash", "assessment_context_hash", "normalized_execution_identity",
+        "independent_source_count", "assessment_context_hash", "normalized_execution_identity",
     )
     return _canonical_json({field: result[field] for field in fields})
 
