@@ -2,6 +2,15 @@
 
 This document supplies public inputs for the ProposalProof v2 demo. It does not replace the canonical governance or block-explorer records. The contract persists the exact rendered excerpts and normalized semantic snapshots used during assessment; retrieve them with `get_evidence_pack(assessment_id)`.
 
+## Finalized StudioNet proof
+
+- Contract: `0x4954181E604f7EA275Ce4BD4F4E3565792231105`
+- Transaction: `0x58fe5158fd5784148bf87f8e811300dd17e85b0a4b4f9192f3b4213128d60016`
+- Receipt: `peg_51f28f589fe67ae7a480`
+- Explorer: https://explorer-studio.genlayer.com/tx/0x58fe5158fd5784148bf87f8e811300dd17e85b0a4b4f9192f3b4213128d60016
+
+The transaction is finalized with `Execution Result: SUCCESS`, `Result Code: Return`, and a durable receipt. The conservative verdict is `disputed` because the legacy Aave page no longer exposes the full proposal record and Etherscan rendering was unavailable to validators; the app reports this limitation instead of producing an unverified positive match.
+
 ## Proposal identity
 
 - Governance: Aave Governance

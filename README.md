@@ -27,9 +27,11 @@ list_assessment_ids() -> str
 
 ## Authoritative deployment
 
-- StudioNet contract: `0x1Ab8f1ed238FE9F06923c6D18C15f22a9197d36d`
-- Explorer: https://explorer-studio.genlayer.com/address/0x1Ab8f1ed238FE9F06923c6D18C15f22a9197d36d
-- Source commit: `1ec311a`
+- StudioNet contract: `0x4954181E604f7EA275Ce4BD4F4E3565792231105`
+- Contract explorer: https://explorer-studio.genlayer.com/address/0x4954181E604f7EA275Ce4BD4F4E3565792231105
+- Finalized assessment transaction: https://explorer-studio.genlayer.com/tx/0x58fe5158fd5784148bf87f8e811300dd17e85b0a4b4f9192f3b4213128d60016
+- Receipt: `peg_51f28f589fe67ae7a480`
+- Source commit: `9a9854c`
 
 This is the only deployment used by the v2 frontend. Earlier addresses are legacy v1 deployments.
 

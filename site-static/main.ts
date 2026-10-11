@@ -3,8 +3,8 @@ import { studionet } from "genlayer-js/chains";
 import { ExecutionResult, TransactionHashVariant, TransactionStatus } from "genlayer-js/types";
 import "./styles.css";
 
-const defaultContract = "0x1Ab8f1ed238FE9F06923c6D18C15f22a9197d36d" as `0x${string}`;
-const defaultReceipt = "peg_443f8cba63e00ce90477";
+const defaultContract = "0x4954181E604f7EA275Ce4BD4F4E3565792231105" as `0x${string}`;
+const defaultReceipt = "peg_51f28f589fe67ae7a480";
 const example = {
   governanceName: "Aave Governance",
   proposalId: "359",

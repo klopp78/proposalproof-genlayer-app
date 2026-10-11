@@ -24,7 +24,7 @@ export default function Home() {
   const [form, setForm] = useState(example);
   const [contractAddress, setContractAddress] = useState(CONTRACT_ADDRESS);
   const [wallet, setWallet] = useState<WalletAddress | null>(null);
-  const [receiptId, setReceiptId] = useState("peg_443f8cba63e00ce90477");
+  const [receiptId, setReceiptId] = useState("peg_51f28f589fe67ae7a480");
   const [record, setRecord] = useState<Record<string, unknown> | null>(null);
   const [evidencePack, setEvidencePack] = useState<Record<string, unknown> | null>(null);
   const [transactionHash, setTransactionHash] = useState("");
