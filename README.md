@@ -27,7 +27,11 @@ list_assessment_ids() -> str
 
 ## Authoritative deployment
 
-The v2 StudioNet address and a finalized verification receipt will be recorded here immediately after deployment. Earlier addresses are legacy v1 deployments and are not used by the v2 frontend.
+- StudioNet contract: `0x1Ab8f1ed238FE9F06923c6D18C15f22a9197d36d`
+- Explorer: https://explorer-studio.genlayer.com/address/0x1Ab8f1ed238FE9F06923c6D18C15f22a9197d36d
+- Source commit: `1ec311a`
+
+This is the only deployment used by the v2 frontend. Earlier addresses are legacy v1 deployments.
 
 ## Live application
 
