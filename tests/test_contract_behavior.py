@@ -152,6 +152,29 @@ class ContractBehaviorTests(unittest.TestCase):
         changed["executed_at_utc"] = "2026-01-01T00:00:01Z"
         self.assertEqual(module._consensus_view(base), module._consensus_view(changed))
 
+    def test_positive_match_requires_strict_critical_agreement(self):
+        module = self.contract_module
+        urls = ["https://vote.onaave.com/proposal/359", f"https://etherscan.io/tx/{TX_HASH}"]
+        manifest = module._source_manifest(urls, urls[0], urls[1])
+        base = module._parse_result(module._evaluate_execution(
+            "Aave Governance", "359", urls[0], "1", TX_HASH, urls[1],
+            "Call claimRewardsOnBehalf() for Sablier", urls, manifest, "a" * 64,
+        ), require_evidence=True)
+        changed = dict(base)
+        changed["values_wei"] = ["1"]
+        self.assertNotEqual(module._consensus_view(base), module._consensus_view(changed))
+
+    def test_conservative_non_matches_share_a_safe_consensus_view(self):
+        module = self.contract_module
+        base = {
+            "assessment_context_hash": "a" * 64,
+            "normalized_execution_identity": f"1:{TX_HASH}",
+            "decision": "disputed",
+        }
+        changed = dict(base)
+        changed["decision"] = "insufficient_evidence"
+        self.assertEqual(module._consensus_view(base), module._consensus_view(changed))
+
     def test_adversarial_identity_mismatch_cannot_be_an_executed_match(self):
         module = self.contract_module
         original = FakeNondet.exec_prompt

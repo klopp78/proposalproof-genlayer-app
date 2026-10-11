@@ -458,14 +458,22 @@ def _parse_result(raw: str, require_evidence: bool) -> dict:
 
 
 def _consensus_view(result: dict) -> str:
-    # Agree on decision-critical facts, not volatile page excerpts or their commitments.
-    fields = (
-        "decision", "proposal_status", "execution_status", "proposal_match", "action_match",
-        "execution_tx_match", "destination_addresses", "function_calls",
-        "values_wei", "parameters_hash", "block_number", "supporting_source_count",
-        "independent_source_count", "assessment_context_hash", "normalized_execution_identity",
-    )
-    return _canonical_json({field: result[field] for field in fields})
+    # A positive execution match is strict: every consequential fact must agree. Different
+    # conservative outcomes are equivalent safe failures and must not split consensus merely
+    # because public pages expose incomplete or differently formatted details to validators.
+    fields = ["assessment_context_hash", "normalized_execution_identity"]
+    positive = result["decision"] == "executed_match"
+    view = {field: result[field] for field in fields}
+    view["positive_execution_match"] = positive
+    if positive:
+        strict_fields = (
+            "proposal_status", "execution_status", "proposal_match", "action_match",
+            "execution_tx_match", "destination_addresses", "function_calls", "values_wei",
+            "parameters_hash", "block_number", "supporting_source_count",
+            "independent_source_count",
+        )
+        view.update({field: result[field] for field in strict_fields})
+    return _canonical_json(view)
 
 
 def _validate_sources(raw_urls: typing.Sequence[str]) -> typing.Sequence[str]:
