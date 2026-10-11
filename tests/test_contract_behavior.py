@@ -127,7 +127,7 @@ class ContractBehaviorTests(unittest.TestCase):
         module = self.contract_module
         self.assertEqual(module._execution_id("1", TX_HASH), f"1:{TX_HASH}")
         with self.assertRaisesRegex(Exception, "execution_url_must_bind"):
-            module._execution_url("https://etherscan.io/tx/0x" + "00" * 32, TX_HASH)
+            module._execution_url("https://etherscan.io/tx/0x" + "00" * 32, "1", TX_HASH)
 
     def test_provider_families_are_not_counted_as_independent_hosts(self):
         module = self.contract_module

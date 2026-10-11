@@ -63,7 +63,7 @@ class ProposalExecutionGuard(gl.Contract):
         canonical_proposal_url = _https_url(proposal_url)
         chain_id = _chain_id(execution_chain_id)
         tx_hash = _transaction_hash(execution_tx_hash)
-        canonical_execution_url = _execution_url(execution_tx_url, tx_hash)
+        canonical_execution_url = _execution_url(execution_tx_url, chain_id, tx_hash)
         actions = _long_text(declared_actions, "declared_actions", 10, 6000)
         urls = _validate_sources([item for item in source_urls])
         if canonical_proposal_url not in urls or canonical_execution_url not in urls:
@@ -198,6 +198,12 @@ def _evaluate_execution(
             observed = _extract_source_facts(
                 rendered, manifest[index], governance, proposal, chain_id, tx_hash, actions,
             )
+            if manifest[index]["role"] == "execution" and manifest[index]["authoritative"]:
+                # The canonical explorer URL itself authoritatively binds network and tx identity.
+                if observed["chain_id"] == "":
+                    observed["chain_id"] = _explorer_chain_id(_host(url))
+                if observed["tx_hash"] == "":
+                    observed["tx_hash"] = tx_hash
         else:
             observed = _empty_observation()
         semantic = {
@@ -518,10 +524,29 @@ def _is_authoritative_execution_host(host: str) -> bool:
     return any(host == domain or host.endswith("." + domain) for domain in domains)
 
 
-def _execution_url(raw: str, tx_hash: str) -> str:
+def _explorer_chain_id(host: str) -> str:
+    chains = {
+        "etherscan.io": "1",
+        "basescan.org": "8453",
+        "arbiscan.io": "42161",
+        "optimistic.etherscan.io": "10",
+        "polygonscan.com": "137",
+        "bscscan.com": "56",
+    }
+    for domain, chain_id in chains.items():
+        if host == domain or host.endswith("." + domain):
+            return chain_id
+    return ""
+
+
+def _execution_url(raw: str, chain_id: str, tx_hash: str) -> str:
     url = _https_url(raw)
-    if not _is_authoritative_execution_host(_host(url)) or tx_hash not in url.lower():
+    host = _host(url)
+    if not _is_authoritative_execution_host(host) or tx_hash not in url.lower():
         raise Exception("execution_url_must_bind_authoritative_tx_hash")
+    explorer_chain_id = _explorer_chain_id(host)
+    if explorer_chain_id != "" and explorer_chain_id != chain_id:
+        raise Exception("execution_explorer_chain_mismatch")
     return url
 
 
