@@ -1,0 +1,18 @@
+{
+  "network": "StudioNet",
+  "contract_address": "0x4954181E604f7EA275Ce4BD4F4E3565792231105",
+  "source_path": "contracts/proposal_execution_guard.py",
+  "source_commit": "9a9854c8ddb59a2a9d04207b980bc21c3b2f1ec5",
+  "source_sha256": "e308037aceeb8cc556d824907e42d5202dee62150338e9e0916b24f321ce25ed",
+  "finalized_assessment_transaction": "0x58fe5158fd5784148bf87f8e811300dd17e85b0a4b4f9192f3b4213128d60016",
+  "assessment_id": "peg_51f28f589fe67ae7a480",
+  "required_execution_state": "FINALIZED",
+  "required_result": "SUCCESS/Return",
+  "frontend_contract_source": "lib/genlayer.ts",
+  "frontend_read_methods": [
+    "get_assessment",
+    "get_evidence_pack",
+    "get_execution_claim",
+    "get_latest_assessment_id"
+  ]
+}

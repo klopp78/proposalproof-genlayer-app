@@ -11,7 +11,7 @@
     "build:pages": "vite build --config vite.pages.config.ts",
     "start": "vinext start",
     "test": "npm run contract:check && npm run test:behavior && npm run build && npm run build:pages",
-    "test:behavior": "\"C:\\Users\\klopp2\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe\" -m unittest discover -s tests -v",
+    "test:behavior": "node scripts/run-python-tests.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern .openai",
     "contract:check": "node scripts/check-contract.mjs",
     "db:generate": "drizzle-kit generate"

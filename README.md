@@ -2,6 +2,14 @@
 
 ProposalProof is an interactive governance execution verification console backed by the ProposalExecutionGuard v2 Intelligent Contract. It binds an approved proposal to one normalized blockchain execution identity and stores a durable consensus receipt plus the exact evidence pack used during assessment.
 
+## Canonical source
+
+- The sole v2 contract source is [`contracts/proposal_execution_guard.py`](contracts/proposal_execution_guard.py).
+- The deployed source is pinned to commit [`9a9854c8ddb59a2a9d04207b980bc21c3b2f1ec5`](https://github.com/klopp78/proposalproof-genlayer-app/blob/9a9854c8ddb59a2a9d04207b980bc21c3b2f1ec5/contracts/proposal_execution_guard.py).
+- Its SHA-256 digest is `e308037aceeb8cc556d824907e42d5202dee62150338e9e0916b24f321ce25ed`.
+- The frontend ABI calls the same v2 methods, including `get_evidence_pack` and `get_execution_claim(chain_id, transaction_hash)`.
+- The machine-readable deployment mapping is in [`evidence/deployment-manifest.json`](evidence/deployment-manifest.json).
+
 ## Verification model
 
 - Execution identity is `chain_id:transaction_hash`, never a URL string.
@@ -31,7 +39,7 @@ list_assessment_ids() -> str
 - Contract explorer: https://explorer-studio.genlayer.com/address/0x4954181E604f7EA275Ce4BD4F4E3565792231105
 - Finalized assessment transaction: https://explorer-studio.genlayer.com/tx/0x58fe5158fd5784148bf87f8e811300dd17e85b0a4b4f9192f3b4213128d60016
 - Receipt: `peg_51f28f589fe67ae7a480`
-- Source commit: `9a9854c`
+- Deployed source commit: `9a9854c8ddb59a2a9d04207b980bc21c3b2f1ec5`
 
 This is the only deployment used by the v2 frontend. Earlier addresses are legacy v1 deployments.
 
@@ -47,3 +55,5 @@ npm test
 ```
 
 The test suite runs contract marker checks, mocked GenVM leader/validator behavior, adversarial identity and provider-family tests, the Next/Vinext production build, and the static GitHub Pages build.
+
+`test:behavior` discovers an available `python3`, `python`, or Windows `py -3` interpreter, so it does not depend on a contributor-specific filesystem path. The cases explicitly cover explorer aliases for one execution identity, altered transaction parameters, provider-family aliases, irrelevant dynamic page changes, validator disagreement, and complete GenVM write/readback behavior.

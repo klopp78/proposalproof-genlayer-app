@@ -152,7 +152,7 @@ class ContractBehaviorTests(unittest.TestCase):
         changed["executed_at_utc"] = "2026-01-01T00:00:01Z"
         self.assertEqual(module._consensus_view(base), module._consensus_view(changed))
 
-    def test_positive_match_requires_strict_critical_agreement(self):
+    def test_altered_transaction_parameters_break_positive_consensus(self):
         module = self.contract_module
         urls = ["https://vote.onaave.com/proposal/359", f"https://etherscan.io/tx/{TX_HASH}"]
         manifest = module._source_manifest(urls, urls[0], urls[1])
@@ -162,6 +162,7 @@ class ContractBehaviorTests(unittest.TestCase):
         ), require_evidence=True)
         changed = dict(base)
         changed["values_wei"] = ["1"]
+        changed["parameters_hash"] = "b" * 64
         self.assertNotEqual(module._consensus_view(base), module._consensus_view(changed))
 
     def test_conservative_non_matches_share_a_safe_consensus_view(self):
